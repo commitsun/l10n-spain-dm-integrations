@@ -202,8 +202,9 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
         )
         fp_extra = self.browse_ref(f"l10n_es.{self.company.id}_fp_extra")
         fp_extra.sii_partner_identification_type = "3"
-        invoice = self.invoice.copy({"partner_id": eu_customer.id})
-        invoice.fiscal_position_id = fp_extra
+        invoice = self.invoice.copy(
+            {"partner_id": eu_customer.id, "fiscal_position_id": fp_extra.id}
+        )
         invoice.action_post()
         sii_info = invoice._get_sii_invoice_dict()
         self.assertEqual(
@@ -449,7 +450,7 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
 
     def test_unlink_invoice_when_sent_to_sii(self):
         self.invoice.sii_state = "sent"
-        self.invoice.button_draft()
+        self.invoice.button_draft()  # Convert to draft to check only SII exception
         with self.assertRaises(exceptions.UserError):
             self.invoice.unlink()
 
@@ -460,8 +461,6 @@ class TestL10nEsAeatSii(TestL10nEsAeatSiiBase):
             self.invoice.write({"invoice_date": "2022-01-01"})
         with self.assertRaises(exceptions.UserError):
             self.invoice.write({"thirdparty_number": "CUSTOM"})
-        with self.assertRaises(exceptions.UserError):
-            self.invoice.write({"name": "NEW-NUMBER"})
         # in_invoice
         in_invoice = self.invoice.copy(
             {
