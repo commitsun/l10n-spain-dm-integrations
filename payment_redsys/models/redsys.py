@@ -177,7 +177,7 @@ class AcquirerRedsys(models.Model):
                 and self.redsys_merchant_description[:125]
             ),
             "Ds_Merchant_ConsumerLanguage": (self.redsys_merchant_lang or "001"),
-            "Ds_Merchant_UrlOk": "%s/payment/redsys/result/redsys_result_ok" % base_url,
+            "Ds_Merchant_UrlOk": "%s/payment/redsys/return" % base_url,
             "Ds_Merchant_UrlKo": "%s/payment/redsys/result/redsys_result_ko" % base_url,
             "Ds_Merchant_Paymethods": self.redsys_pay_method or "T",
         }
